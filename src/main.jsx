@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom'; // Switched to Legacy import for stability
 import { 
   Menu, X, ArrowRight, Shield, Music, Zap, Bot, MessageSquare, 
   Github, Twitter, ExternalLink, ChevronDown, LayoutDashboard, 
@@ -9,7 +10,8 @@ import {
 // --- CONFIGURATION ---
 const API_URL = 'https://97s-bot.onrender.com'; // Your Render URL
 
-export default function App() {
+// --- MAIN APP COMPONENT ---
+function App() {
   const [currentView, setCurrentView] = useState('landing'); 
   const [stats, setStats] = useState({ servers: 0, users: 0, ping: 0 });
 
@@ -28,6 +30,11 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-black text-zinc-100 font-sans selection:bg-pink-600 selection:text-white">
+      {/* Global Styles Injection */}
+      <style>{`
+        body { background-color: #000; color: #fff; margin: 0; font-family: 'Inter', system-ui, sans-serif; }
+      `}</style>
+      
       {currentView === 'landing' && <LandingPage stats={stats} onLogin={handleLogin} />}
       {currentView === 'loading' && <LoadingScreen />}
       {currentView === 'dashboard' && <Dashboard onLogout={() => setCurrentView('landing')} />}
@@ -244,7 +251,7 @@ function Dashboard({ onLogout }) {
   );
 }
 
-// Helper components remain the same...
+// Helper components
 function FeatureCard({ icon, title, description }) {
   return (
     <div className="p-8 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-pink-900 hover:bg-zinc-900/80 transition-all duration-300 group">
@@ -254,5 +261,54 @@ function FeatureCard({ icon, title, description }) {
       <h3 className="text-xl font-bold text-white mb-3">{title}</h3>
       <p className="text-zinc-400 leading-relaxed">{description}</p>
     </div>
+  );
+}
+
+function StatCard({ title, value, change }) {
+  return (
+    <div className="bg-zinc-950 border border-zinc-900 rounded-xl p-6 hover:border-zinc-800 transition-colors">
+      <p className="text-zinc-500 text-sm font-medium mb-2">{title}</p>
+      <div className="flex items-end justify-between">
+        <h3 className="text-3xl font-bold text-white">{value}</h3>
+        <span className="text-green-500 text-sm font-bold bg-green-500/10 px-2 py-1 rounded">{change}</span>
+      </div>
+    </div>
+  );
+}
+
+function ActivityRow({ user, action, time }) {
+  return (
+    <div className="flex items-center gap-4 p-3 rounded-lg hover:bg-zinc-900/50 transition-colors">
+      <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs text-white font-bold">
+        {user.charAt(0)}
+      </div>
+      <div className="flex-1">
+        <p className="text-sm text-zinc-300"><span className="font-bold text-white">{user}</span> {action}</p>
+      </div>
+      <span className="text-xs text-zinc-600">{time}</span>
+    </div>
+  );
+}
+
+function Toggle({ checked, onChange }) {
+  return (
+    <button 
+      onClick={onChange}
+      className={`w-12 h-6 rounded-full p-1 transition-colors duration-200 ease-in-out ${checked ? 'bg-pink-600' : 'bg-zinc-800'}`}
+    >
+      <div className={`w-4 h-4 rounded-full bg-white shadow-sm transform transition-transform duration-200 ${checked ? 'translate-x-6' : 'translate-x-0'}`} />
+    </button>
+  );
+}
+
+// --- RENDER APPLICATION ---
+const rootElement = document.getElementById('root');
+if (rootElement) {
+  // Using legacy render to fix the "reading 'S'" version mismatch error
+  ReactDOM.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>, 
+    rootElement
   );
 }
