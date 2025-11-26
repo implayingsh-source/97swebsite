@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ReactDOM from 'react-dom'; // Switched to Legacy import for stability
+import ReactDOM from 'react-dom';
 import { 
   Menu, X, ArrowRight, Shield, Music, Zap, Bot, MessageSquare, 
   Github, Twitter, ExternalLink, ChevronDown, LayoutDashboard, 
@@ -30,9 +30,15 @@ function App() {
 
   return (
     <div className="min-h-screen bg-black text-zinc-100 font-sans selection:bg-pink-600 selection:text-white">
-      {/* Global Styles Injection */}
+      {/* Global Styles Injection to ensure black background immediately */}
       <style>{`
-        body { background-color: #000; color: #fff; margin: 0; font-family: 'Inter', system-ui, sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
+        body, html { background-color: #000; color: #fff; margin: 0; font-family: 'Inter', system-ui, sans-serif; }
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #09090b; }
+        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
       `}</style>
       
       {currentView === 'landing' && <LandingPage stats={stats} onLogin={handleLogin} />}
@@ -251,7 +257,7 @@ function Dashboard({ onLogout }) {
   );
 }
 
-// Helper components
+// Helper components remain the same...
 function FeatureCard({ icon, title, description }) {
   return (
     <div className="p-8 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-pink-900 hover:bg-zinc-900/80 transition-all duration-300 group">
@@ -304,11 +310,5 @@ function Toggle({ checked, onChange }) {
 // --- RENDER APPLICATION ---
 const rootElement = document.getElementById('root');
 if (rootElement) {
-  // Using legacy render to fix the "reading 'S'" version mismatch error
-  ReactDOM.render(
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>, 
-    rootElement
-  );
+  ReactDOM.render(<App />, rootElement);
 }
